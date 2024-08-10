@@ -3,11 +3,10 @@
 <head>
   <title>BMI Calculator with Vue</title>
   <style>
-    body{
-      justify-content:center;
-      aligin-items:center;
-      text-align:center;
-      
+    body {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
     #app > div {
       position: relative;
@@ -16,20 +15,28 @@
       height: 100px;
       background-image: url("https://variety.com/wp-content/uploads/2024/07/MCDDEME_UV014.jpg?w=1000&h=563&crop=1");
       background-size: cover;
+      margin: 0 auto;
     }
     #onTop {
       position: absolute;
-/*       top: 0;
-      left: 0; */
       width: 100%;
       height: 100%;
       padding: 20px;
       box-sizing: border-box;
       z-index: 2;
       color: white;
-      justify-content:center;
-      align-items:center;
-      
+      justify-content: center;
+      align-items: center;
+    }
+    .button-group {
+      margin-top: 20px;
+    }
+    .button-group button {
+      margin: 0 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
     }
   </style>
 </head>
@@ -54,10 +61,22 @@
     <strong>BMI: {{calculateBMI}}</strong>
   </p>
   <div>
-    <div id="onTop" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
+    <div id="onTop" class="" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
       BMI: {{calculateBMI}}
     </div>
   </div>
+  
+  
+    <button @click="addToList">Add to List</button>
+    <button @click="clearList">Clear List</button>
+
+  
+  <h2>BMI History</h2>
+  <ul>
+    <li v-for="(item, index) in bmiList" :key="index">
+      Height: {{item.height}}cm, Weight: {{item.weight}}kg, BMI: {{item.bmi}}
+    </li>
+  </ul>
 </div>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -67,12 +86,23 @@
       return {
         opacityVal: 0,
         height: 170,
-        weight: 70
+        weight: 70,
+        bmiList: []
       }
     },
     methods: {
       formatOpacity(value) {
         return (value / 250).toFixed(2);
+      },
+      addToList() {
+        this.bmiList.push({
+          height: this.height,
+          weight: this.weight,
+          bmi: this.calculateBMI
+        });
+      },
+      clearList() {
+        this.bmiList = [];
       }
     },
     computed: {
