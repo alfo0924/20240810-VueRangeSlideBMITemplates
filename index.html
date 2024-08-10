@@ -8,7 +8,7 @@
       align-items: center;
       text-align: center;
     }
-    #app > div {
+    #app > div .mini {
       position: relative;
       border: dashed black 1px;
       width: 200px;
@@ -38,6 +38,14 @@
       list-style-type: none;
       padding: 0;
     }
+    .bmi-category {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    .bmi-category h3 {
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -61,22 +69,44 @@
     <strong>BMI: {{calculateBMI}}</strong>
   </p>
   <div>
-    <div id="onTop" class="" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
+    <div class="mini" id="onTop" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
       BMI: {{calculateBMI}}
     </div>
   </div>
   
-  
+  <div class="button-group">
     <button @click="addToList">Add to List</button>
     <button @click="clearList">Clear List</button>
-
+  </div>
   
   <h2>BMI History</h2>
-  <ul>
-    <li v-for="(item, index) in bmiList" :key="index">
-      Height: {{item.height}}cm, Weight: {{item.weight}}kg, BMI: {{item.bmi}}
-    </li>
-  </ul>
+  
+  <div class="bmi-category">
+    <h3>Underweight (BMI < 18.5)</h3>
+    <ul>
+      <li v-for="(item, index) in categorizedBMI.underweight" :key="'underweight-'+index">
+        Height: {{item.height}}cm, Weight: {{item.weight}}kg, BMI: {{item.bmi}}
+      </li>
+    </ul>
+  </div>
+  
+  <div class="bmi-category">
+    <h3>Normal Weight (18.5 ≤ BMI < 25)</h3>
+    <ul>
+      <li v-for="(item, index) in categorizedBMI.normalWeight" :key="'normal-'+index">
+        Height: {{item.height}}cm, Weight: {{item.weight}}kg, BMI: {{item.bmi}}
+      </li>
+    </ul>
+  </div>
+  
+  <div class="bmi-category">
+    <h3>Overweight (BMI ≥ 25)</h3>
+    <ul>
+      <li v-for="(item, index) in categorizedBMI.overweight" :key="'overweight-'+index">
+        Height: {{item.height}}cm, Weight: {{item.weight}}kg, BMI: {{item.bmi}}
+      </li>
+    </ul>
+  </div>
 </div>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -87,7 +117,11 @@
         opacityVal: 0,
         height: 170,
         weight: 70,
-        bmiList: []
+        categorizedBMI: {
+          underweight: [],
+          normalWeight: [],
+          overweight: []
+        }
       }
     },
     methods: {
@@ -95,14 +129,27 @@
         return (value / 250).toFixed(2);
       },
       addToList() {
-        this.bmiList.push({
+        const bmi = parseFloat(this.calculateBMI);
+        const entry = {
           height: this.height,
           weight: this.weight,
-          bmi: this.calculateBMI
-        });
+          bmi: bmi.toFixed(1)
+        };
+        
+        if (bmi < 18.5) {
+          this.categorizedBMI.underweight.push(entry);
+        } else if (bmi >= 18.5 && bmi < 25) {
+          this.categorizedBMI.normalWeight.push(entry);
+        } else {
+          this.categorizedBMI.overweight.push(entry);
+        }
       },
       clearList() {
-        this.bmiList = [];
+        this.categorizedBMI = {
+          underweight: [],
+          normalWeight: [],
+          overweight: []
+        };
       }
     },
     computed: {
