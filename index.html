@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BMI Calculator with Vue</title>
+  <style>
+    #app > div {
+      position: relative;
+      border: dashed black 1px;
+      width: 200px;
+      height: 100px;
+      background-image: url("https://variety.com/wp-content/uploads/2024/07/MCDDEME_UV014.jpg?w=1000&h=563&crop=1");
+      background-size: cover;
+    }
+    #onTop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<h1>BMI Calculator with Vue</h1>
+<p>Drag the range inputs to set height and weight, and calculate BMI.</p>
+<div id="app">
+  <p>
+    <input type="range" min="0" max="250" step="1" v-model="opacityVal"> 
+    {{formatOpacity(opacityVal)}} (opacity value)
+  </p>
+  <p>
+    <input type="range" min="100" max="220" step="1" v-model="height"> 
+    {{height}} cm (height)
+  </p>
+  <p>
+    <input type="range" min="30" max="150" step="1" v-model="weight"> 
+    {{weight}} kg (weight)
+  </p>
+  <p>
+    <strong>BMI: {{calculateBMI}}</strong>
+  </p>
+  <div>
+    <div id="onTop" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
+      BMI: {{calculateBMI}}
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        opacityVal: 0,
+        height: 170,
+        weight: 70
+      }
+    },
+    methods: {
+      formatOpacity(value) {
+        return (value / 250).toFixed(2);
+      }
+    },
+    computed: {
+      calculateBMI() {
+        const heightInMeters = this.height / 100;
+        const bmi = this.weight / (heightInMeters * heightInMeters);
+        return bmi.toFixed(1);
+      }
+    }
+  })
+  app.mount('#app')
+</script>
+
+</body>
+</html>
