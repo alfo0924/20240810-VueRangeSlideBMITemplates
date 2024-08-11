@@ -8,7 +8,7 @@
       align-items: center;
       text-align: center;
     }
-    #app > div .mini {
+    .mini {
       position: relative;
       border: dashed black 1px;
       width: 200px;
@@ -25,6 +25,7 @@
       box-sizing: border-box;
       z-index: 2;
       color: white;
+      display: flex;
       justify-content: center;
       align-items: center;
     }
@@ -54,8 +55,8 @@
 <p>Drag the range inputs to set height and weight, and calculate BMI.</p>
 <div id="app">
   <p>
-    <input type="range" min="0" max="250" step="1" v-model="opacityVal"> 
-    {{formatOpacity(opacityVal)}} (opacity value)
+    <input type="range" min="0" max="1" step="0.1" v-model="opacityVal"> 
+    {{opacityVal}} (opacity value)
   </p>
   <p>
     <input type="range" min="100" max="220" step="1" v-model="height"> 
@@ -68,8 +69,8 @@
   <p>
     <strong>BMI: {{calculateBMI}}</strong>
   </p>
-  <div>
-    <div class="mini" id="onTop" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+formatOpacity(opacityVal)+')' }">
+  <div class="mini">
+    <div id="onTop" v-bind:style="{ backgroundColor: 'rgba(99,0,89,'+opacityVal+')' }">
       BMI: {{calculateBMI}}
     </div>
   </div>
@@ -125,9 +126,6 @@
       }
     },
     methods: {
-      formatOpacity(value) {
-        return (value / 250).toFixed(2);
-      },
       addToList() {
         const bmi = parseFloat(this.calculateBMI);
         const entry = {
